@@ -5,6 +5,7 @@
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <meta name="description" content="어반스케치 수채화 컬러링">
 
   <!-- iOS meta tags & icons -->
@@ -20,8 +21,71 @@
 
   <title>어반스케치 컬러링</title>
   <link rel="manifest" href="manifest.json">
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #FAF8F5;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans KR", sans-serif;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    #splash-loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      width: 100vw;
+      position: fixed;
+      top: 0;
+      left: 0;
+      background-color: #FAF8F5;
+      z-index: 99999;
+      transition: opacity 0.5s ease-out;
+    }
+    .spinner {
+      width: 44px;
+      height: 44px;
+      border: 4px solid #FFE082;
+      border-top: 4px solid #FFB300;
+      border-radius: 50%;
+      animation: spin 0.9s cubic-bezier(0.5, 0.1, 0.4, 0.9) infinite;
+      margin: 18px 0;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
 </head>
 <body>
+  <div id="splash-loading">
+    <div style="font-size: 52px; line-height: 1;">🎨</div>
+    <div class="spinner"></div>
+    <div style="font-size: 18px; font-weight: bold; color: #5D3D00; letter-spacing: -0.3px;">어반스케치 컬러링</div>
+    <div style="font-size: 13px; color: #8A6D3B; margin-top: 6px;">앱을 준비하는 중입니다...</div>
+    <div style="font-size: 11px; color: #A89F91; margin-top: 8px;">(첫 실행 시 3~5초 정도 소요될 수 있습니다)</div>
+  </div>
+
+  <script>
+    // Flutter 첫 프레임 로드 시 부드럽게 스플래시 제거
+    const observer = new MutationObserver((mutations) => {
+      if (document.querySelector('flutter-view') || document.querySelector('flt-glass-pane') || document.querySelector('flt-scene-host')) {
+        const splash = document.getElementById('splash-loading');
+        if (splash) {
+          splash.style.opacity = '0';
+          setTimeout(() => {
+            if (splash.parentNode) splash.parentNode.removeChild(splash);
+          }, 500);
+        }
+        observer.disconnect();
+      }
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+  </script>
+
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>
